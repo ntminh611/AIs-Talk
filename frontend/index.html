@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Multi-Agent Debate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <div class="chat-header">
+                <h1>AI Multi-Agent Debate</h1>
+                <div class="header-right">
+                    <div id="status" class="status-bar">
+                        <span class="status-indicator online"></span>
+                        <span id="statusText">Sẵn sàng</span>
+                    </div>
+                    <button id="helpBtn" class="btn-icon btn-help" title="Hướng dẫn sử dụng">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div id="messages" class="messages">
+                    <div class="welcome-message">
+                        <h2>Chào mừng đến với AI Multi-Agent Debate!</h2>
+                        <p>Nhập một chủ đề và nhấn "Bắt đầu" để các AI agent bắt đầu thảo luận.</p>
+                    </div>
+                </div>
+                <button id="scrollToBottomBtn" class="scroll-to-bottom-btn" title="Cuộn xuống cuối">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </main>
+
+        <!-- Resize Handle -->
+        <div class="resize-handle" id="resizeHandle"></div>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3>Chủ đề</h3>
+                <div class="topic-input">
+                    <textarea id="topicInput" placeholder="Nhập chủ đề thảo luận..." rows="4"></textarea>
+                </div>
+                <div class="topic-buttons">
+                    <button id="startBtn" class="btn btn-primary btn-full">Bắt đầu mới</button>
+                    <button id="continueBtn" class="btn btn-secondary btn-full" disabled>Tiếp tục</button>
+                </div>
+                <div class="topic-buttons" style="margin-top: 8px;">
+                    <button id="stopBtn" class="btn btn-danger btn-full" disabled>Dừng</button>
+                    <button id="nextAgentBtn" class="btn btn-secondary btn-full" disabled>Agent tiếp theo</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Điều khiển</h3>
+                <div class="control-row">
+                    <select id="modeSelect" class="select-control">
+                        <option value="round_robin">Round Robin</option>
+                        <option value="free_form">Free Form</option>
+                    </select>
+                    <button id="autoBtn" class="btn btn-secondary" disabled>Tự động</button>
+                </div>
+                <div class="control-buttons" style="margin-top: 8px;">
+                    <button id="exportMdBtn" class="btn btn-outline btn-full">Export MD</button>
+                    <button id="importMdBtn" class="btn btn-outline btn-full">Import MD</button>
+                    <input type="file" id="importMdInput" accept=".md" style="display: none;">
+                </div>
+            </div>
+
+            <div class="sidebar-section agents-section">
+                <div class="agents-header">
+                    <h3>Agents</h3>
+                    <button id="manageAgentsBtn" class="btn btn-sm btn-outline" title="Quản lý Agents">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="agentsList" class="agents-list">
+                    <!-- Agents will be loaded here as buttons -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Agent Manager Modal -->
+    <div id="agentModal" class="modal">
+        <div class="modal-content modal-xlarge">
+            <div class="modal-header">
+                <h2 id="agentModalTitle">Quản lý Agents</h2>
+                <button class="modal-close" onclick="closeAgentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Agent List View -->
+                <div id="agentListView">
+                    <div class="agent-manager-toolbar">
+                        <button id="addAgentBtn" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Thêm Agent
+                        </button>
+                        <button id="saveOrderBtn" class="btn btn-secondary">Lưu thứ tự</button>
+                    </div>
+                    <div id="agentManagerList" class="agent-manager-list">
+                        <!-- Agents will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Agent Edit Form (hidden by default) -->
+                <div id="agentEditView" style="display: none;">
+                    <form id="agentForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="agentId">ID <span class="required">*</span></label>
+                                <input type="text" id="agentId" name="id" required placeholder="vd: analyst">
+                                <small>ID duy nhất, không có dấu cách</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="agentName">Tên <span class="required">*</span></label>
+                                <input type="text" id="agentName" name="name" required placeholder="vd: Analyst">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="agentRole">Vai trò</label>
+                            <input type="text" id="agentRole" name="role"
+                                placeholder="vd: Phân tích logic, data-driven">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="agentProvider">Provider</label>
+                                <select id="agentProvider" name="provider">
+                                    <option value="openai">OpenAI</option>
+                                    <option value="anthropic">Anthropic</option>
+                                    <option value="gemini">Gemini</option>
+                                    <option value="ollama">Ollama</option>
+                                    <option value="grok">Grok (xAI)</option>
+                                    <option value="deepseek">DeepSeek</option>
+                                    <option value="perplexity">Perplexity</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="agentModel">Model</label>
+                                <input type="text" id="agentModel" name="model" placeholder="vd: gpt-4">
+                            </div>
+                        </div>
+                        <!-- LLM Parameters Section -->
+                        <div class="form-section">
+                            <h4 class="form-section-title">Tham số LLM</h4>
+                            <div class="form-row form-row-6">
+                                <div class="form-group">
+                                    <label for="agentTemperature">
+                                        Temp
+                                        <span class="tooltip-icon"
+                                            title="Điều chỉnh độ ngẫu nhiên của output. Giá trị cao (1.5-2) = sáng tạo. Giá trị thấp (0-0.5) = chính xác.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentTemperature" name="temperature" min="0" max="2"
+                                        step="0.1" value="0.7">
+                                </div>
+                                <div class="form-group">
+                                    <label for="agentMaxTokens">
+                                        Max Tokens
+                                        <span class="tooltip-icon"
+                                            title="Số token tối đa trong response. 0 = mặc định của model.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentMaxTokens" name="max_tokens" min="0" max="128000"
+                                        step="100" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="agentTopP">
+                                        Top P
+                                        <span class="tooltip-icon"
+                                            title="Nucleus sampling. 0.1 = top 10% token. 1.0 = tất cả.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentTopP" name="top_p" min="0" max="1" step="0.05"
+                                        value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="agentTopK">
+                                        Top K
+                                        <span class="tooltip-icon"
+                                            title="Chỉ chọn K token xác suất cao nhất. 0 = tắt.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentTopK" name="top_k" min="0" max="100" step="1"
+                                        value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="agentFrequencyPenalty">
+                                        Freq Pen
+                                        <span class="tooltip-icon"
+                                            title="Phạt token theo tần suất. Dương = giảm lặp từ. -2 đến 2.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentFrequencyPenalty" name="frequency_penalty" min="-2"
+                                        max="2" step="0.1" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="agentPresencePenalty">
+                                        Pres Pen
+                                        <span class="tooltip-icon"
+                                            title="Phạt token đã xuất hiện. Dương = khuyến khích chủ đề mới. -2 đến 2.">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="agentPresencePenalty" name="presence_penalty" min="-2"
+                                        max="2" step="0.1" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Settings -->
+                        <div class="form-row form-row-3">
+                            <div class="form-group form-group-color">
+                                <label for="agentColor">Màu</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="agentColor" name="color" value="#4A90D9">
+                                    <input type="text" id="agentColorText" value="#4A90D9" placeholder="#4A90D9">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="agentBaseUrl">Base URL</label>
+                                <input type="text" id="agentBaseUrl" name="base_url"
+                                    placeholder="http://localhost:8045/v1">
+                            </div>
+                            <div class="form-group">
+                                <label for="agentApiKey">API Key</label>
+                                <input type="password" id="agentApiKey" name="api_key"
+                                    placeholder="Để trống = key mặc định">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="agentSystemPrompt">System Prompt</label>
+                            <textarea id="agentSystemPrompt" name="system_prompt" rows="8"
+                                placeholder="Nhập system prompt cho agent..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" onclick="showAgentList()">Hủy</button>
+                            <button type="submit" class="btn btn-primary" id="saveAgentBtn">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Hướng dẫn sử dụng</h2>
+                <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+            </div>
+            <div class="modal-body help-content">
+                <section class="help-section">
+                    <h3>🎯 Giới thiệu</h3>
+                    <p>AI Multi-Agent Debate là ứng dụng cho phép nhiều AI agents cùng thảo luận về một chủ đề. Mỗi
+                        agent có vai trò và phong cách riêng, giúp bạn có được nhiều góc nhìn đa dạng về vấn đề.</p>
+                </section>
+
+                <section class="help-section">
+                    <h3>🚀 Bắt đầu nhanh</h3>
+                    <ol>
+                        <li><strong>Nhập chủ đề</strong> vào ô "Chủ đề" ở sidebar bên phải</li>
+                        <li>Nhấn <strong>"Bắt đầu mới"</strong> để khởi tạo cuộc thảo luận</li>
+                        <li>Agent đầu tiên sẽ tự động phát biểu</li>
+                        <li>Click vào các agent trong danh sách để yêu cầu họ phát biểu tiếp</li>
+                    </ol>
+                </section>
+
+                <section class="help-section">
+                    <h3>🎮 Điều khiển</h3>
+                    <div class="help-grid">
+                        <div class="help-item">
+                            <span class="help-label">Bắt đầu mới</span>
+                            <span class="help-desc">Xóa toàn bộ và bắt đầu thảo luận mới với chủ đề đã nhập</span>
+                        </div>
+                        <div class="help-item">
+                            <span class="help-label">Tiếp tục</span>
+                            <span class="help-desc">Thêm chủ đề mới vào cuộc thảo luận hiện tại</span>
+                        </div>
+                        <div class="help-item">
+                            <span class="help-label">Dừng</span>
+                            <span class="help-desc">Tạm dừng cuộc thảo luận đang diễn ra</span>
+                        </div>
+                        <div class="help-item">
+                            <span class="help-label">Agent tiếp theo</span>
+                            <span class="help-desc">Yêu cầu agent tiếp theo phát biểu (theo thứ tự)</span>
+                        </div>
+                        <div class="help-item">
+                            <span class="help-label">Tự động</span>
+                            <span class="help-desc">Bật/tắt chế độ tự động - các agent sẽ lần lượt phát biểu</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="help-section">
+                    <h3>🤖 Quản lý Agents</h3>
+                    <ul>
+                        <li><strong>Checkbox:</strong> Chọn/bỏ chọn agents tham gia chế độ tự động</li>
+                        <li><strong>Kéo thả:</strong> Sắp xếp lại thứ tự phát biểu của agents</li>
+                        <li><strong>Nút ⚙️:</strong> Mở cửa sổ quản lý để thêm, sửa, xóa agents</li>
+                        <li><strong>Toggle on/off:</strong> Ẩn/hiện agent khỏi panel bên cạnh</li>
+                    </ul>
+                </section>
+
+                <section class="help-section">
+                    <h3>💾 Xuất/Nhập dữ liệu</h3>
+                    <ul>
+                        <li><strong>Export MD:</strong> Xuất toàn bộ cuộc thảo luận ra file Markdown (.md)</li>
+                        <li><strong>Import MD:</strong> Nhập file Markdown đã xuất trước đó để xem lại</li>
+                    </ul>
+                </section>
+
+                <section class="help-section">
+                    <h3>🔌 Providers hỗ trợ</h3>
+                    <div class="help-providers">
+                        <span class="provider-badge">OpenAI</span>
+                        <span class="provider-badge">Anthropic</span>
+                        <span class="provider-badge">Gemini</span>
+                        <span class="provider-badge">Ollama</span>
+                        <span class="provider-badge">Grok</span>
+                        <span class="provider-badge">DeepSeek</span>
+                        <span class="provider-badge">Perplexity</span>
+                    </div>
+                    <p class="help-note">Mỗi agent có thể sử dụng một provider khác nhau. Cấu hình trong phần Quản lý
+                        Agents.</p>
+                </section>
+
+                <section class="help-section">
+                    <h3>⌨️ Phím tắt</h3>
+                    <div class="help-grid">
+                        <div class="help-item">
+                            <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                            <span class="help-desc">Bắt đầu/Tiếp tục thảo luận</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="help-section">
+                    <h3>💡 Mẹo sử dụng</h3>
+                    <ul>
+                        <li>Sử dụng chế độ <strong>Round Robin</strong> để các agent phát biểu lần lượt theo thứ tự</li>
+                        <li>Sử dụng chế độ <strong>Free Form</strong> để tự do chọn agent phát biểu</li>
+                        <li>Trong chế độ tự động, chỉ các agents được check mới tham gia thảo luận</li>
+                        <li>Có thể kéo sidebar để thay đổi kích thước</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

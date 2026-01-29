@@ -1,0 +1,21 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "AI Multi-Agent Debate",
+  "outputfilename": "talk",
+  "frontend:install": "",
+  "frontend:build": "",
+  "frontend:dev:watcher": "",
+  "frontend:dev:serverUrl": "",
+  "author": {
+    "name": "Minh Nguyen",
+    "email": "minhnguyen@example.com"
+  },
+  "info": {
+    "companyName": "AI Multi-Agent Debate",
+    "productName": "AI Multi-Agent Debate",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright © 2026",
+    "comments": "Ứng dụng Multi-Agent AI cho phép nhiều AI từ các providers khác nhau thảo luận"
+  },
+  "nsisType": "single"
+}
